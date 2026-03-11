@@ -1,4 +1,4 @@
-# Clothing Strip System
+# wClothing
 ### by [Wicked Development](https://github.com/wickedlovesunturned)
 
 A lightweight Roblox clothing toggle system that lets each player independently remove and re-equip their hat, hair, back, waist, shirt, and pants using simple chat commands  no respawning, no lag, no GUI required.
