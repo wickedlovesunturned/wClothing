@@ -10,22 +10,22 @@
  * ─────────────────────────────────────────────
  *  Project  : wClothing
  *  Author   : Wicked
- *  Version  : 1.0.0
+ *  Version  : 1.0.1
  *  Built    : 2026
  * ─────────────────────────────────────────────
  *  © Wicked Development — All Rights Reserved
 --]]
 
--- ClothingCommands (LocalScript — StarterPlayerScripts)
-
 local Players           = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TextChatService   = game:GetService("TextChatService")
 
-local player     = Players.LocalPlayer
-local Remotes    = ReplicatedStorage:WaitForChild("ClothingRemotes", 15)
+local player         = Players.LocalPlayer
+local Remotes        = ReplicatedStorage:WaitForChild("ClothingRemotes", 15)
 local ToggleClothing = Remotes:WaitForChild("ToggleClothing", 10)
 local SyncClothing   = Remotes:WaitForChild("SyncClothing", 10)
+
+SyncClothing.OnClientEvent:Connect(function(_) end)
 
 local COMMANDS = {
 	["/hat"]   = "hat",
@@ -36,15 +36,19 @@ local COMMANDS = {
 	["/pants"] = "pants",
 }
 
+local lastFired = {}
+local DEBOUNCE  = 0.5
+
 local function onChat(message)
 	local cmd = message:lower():match("^(/[%a]+)")
 	if not cmd then return end
 	local slot = COMMANDS[cmd]
 	if not slot then return end
+	local now = tick()
+	if lastFired[slot] and (now - lastFired[slot]) < DEBOUNCE then return end
+	lastFired[slot] = now
 	ToggleClothing:FireServer(slot)
 end
-
-SyncClothing.OnClientEvent:Connect(function(_) end)
 
 if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
 	TextChatService.SendingMessage:Connect(function(msg)
